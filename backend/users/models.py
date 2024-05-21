@@ -3,6 +3,10 @@ from django.contrib.auth.models import AbstractUser
 
 
 class CustomUser(AbstractUser):
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('username', 'first_name', 'last_name')
+
     username = models.CharField(
         verbose_name='Логин',
         max_length=150,
@@ -12,6 +16,7 @@ class CustomUser(AbstractUser):
     email = models.EmailField(
         verbose_name='Адрес почты',
         max_length=254,
+        unique=True,
         blank=False
     )
     first_name = models.CharField(
@@ -25,6 +30,18 @@ class CustomUser(AbstractUser):
         blank=False
     )
 
+    def __str__(self):
+        return f'Пользователь {self.username}'
+
 
 class Follow(models.Model):
-    pass
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='followed_users')
+    followed_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='following_users')
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'followed_user'),
+                name='unique_subscription'
+            )
+        ]
