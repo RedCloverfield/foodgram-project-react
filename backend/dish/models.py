@@ -109,7 +109,7 @@ class RecipeIngredient(models.Model):
     )
 
     class Meta:
-        verbose_name = 'Ингредиенты рецепта'
+        verbose_name = 'Ингредиент рецепта'
         verbose_name_plural = 'Ингредиенты рецепта'
         default_related_name = 'recipeingredients'
 
@@ -119,7 +119,7 @@ class RecipeTag(models.Model):
     tag = models.ForeignKey(Tag, on_delete=models.CASCADE, verbose_name='Тэг')
 
     class Meta:
-        verbose_name = 'Тэги рецепта'
+        verbose_name = 'Тэг рецепта'
         verbose_name_plural = 'Тэги рецепта'
         default_related_name = 'recipetags'
 
@@ -151,7 +151,7 @@ class ShoppingCart(models.Model):
 
     class Meta():
         verbose_name = 'Список покупок'
-        verbose_name_plural = 'Список покупок'
+        verbose_name_plural = 'Списки покупок'
         default_related_name = 'shoppingcart'
         constraints = [
             models.UniqueConstraint(
