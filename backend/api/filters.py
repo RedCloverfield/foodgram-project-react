@@ -8,7 +8,12 @@ User = get_user_model()
 
 
 class CustomRecipeFilter(FilterSet):
-    tags = ModelMultipleChoiceFilter(field_name='tags__slug', to_field_name='slug', lookup_expr='iexact', queryset=Tag.objects.all())
+    tags = ModelMultipleChoiceFilter(
+        field_name='tags__slug',
+        to_field_name='slug',
+        lookup_expr='iexact',
+        queryset=Tag.objects.all()
+    )
     is_favorited = NumberFilter(method='filter_is_favorited')
     is_in_shopping_cart = NumberFilter(method='filter_is_in_shopping_cart')
 

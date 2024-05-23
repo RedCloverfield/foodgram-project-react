@@ -1,12 +1,15 @@
-from collections.abc import Callable, Sequence
-from typing import Any
 from django.contrib import admin
 from django.contrib.auth import get_user_model
-from django.db.models.fields.related import ForeignKey
-from django.forms.models import ModelChoiceField
-from django.http import HttpRequest
 
-from .models import Recipe, Ingredient, Tag, Favorite, ShoppingCart, RecipeIngredient, RecipeTag
+from .models import (
+    Recipe,
+    Ingredient,
+    Tag,
+    Favorite,
+    ShoppingCart,
+    RecipeIngredient,
+    RecipeTag
+)
 
 
 User = get_user_model()
