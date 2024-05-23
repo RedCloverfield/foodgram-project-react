@@ -35,8 +35,17 @@ class CustomUser(AbstractUser):
 
 
 class Follow(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='followed_users')
-    followed_user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='following_users')
+    user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE,
+        related_name='followed_users'
+    )
+    followed_user = models.ForeignKey(
+        CustomUser, on_delete=models.CASCADE,
+        related_name='following_users'
+    )
+    created = models.DateTimeField(
+        auto_now_add=True, verbose_name='Дата подписки'
+    )
 
     class Meta:
         verbose_name = 'Подписка'
