@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.validators import UnicodeUsernameValidator
 
 
 class CustomUser(AbstractUser):
@@ -11,7 +12,8 @@ class CustomUser(AbstractUser):
         verbose_name='Логин',
         max_length=150,
         unique=True,
-        blank=False
+        blank=False,
+        validators=(UnicodeUsernameValidator(),)
     )
     email = models.EmailField(
         verbose_name='Адрес почты',
