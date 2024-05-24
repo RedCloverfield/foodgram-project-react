@@ -193,7 +193,7 @@ class ShoppingCart(FavoriteAndShopingCartBaseModel):
     class Meta():
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
-        default_related_name = 'shoppingcarts'
+        default_related_name = 'shoppingcart'
         constraints = [
             models.UniqueConstraint(
                 fields=('user', 'recipe'),
