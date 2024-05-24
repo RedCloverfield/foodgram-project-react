@@ -20,10 +20,7 @@ User = get_user_model()
 class CustomUserViewSet(UserViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    @action(
-            detail=False, permission_classes=(IsAuthenticated,),
-            pagination_class=LimitOffsetPagination
-        )
+    @action(detail=False, pagination_class=LimitOffsetPagination)
     def subscriptions(self, request):
         subscriptions = User.objects.filter(following_users__user=request.user)
         page = self.paginate_queryset(subscriptions)
@@ -32,10 +29,7 @@ class CustomUserViewSet(UserViewSet):
         )
         return self.get_paginated_response(serializer.data)
 
-    @action(
-            detail=True, methods=('post', 'delete'),
-            permission_classes=(IsAuthenticated,)
-        )
+    @action(detail=True, methods=('post', 'delete'))
     def subscribe(self, request, id=None):
         user = request.user
         followed_user = self.get_object()
