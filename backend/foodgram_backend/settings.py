@@ -1,7 +1,6 @@
 from dotenv import load_dotenv
 
 import os
-from datetime import timedelta
 from pathlib import Path
 
 
@@ -118,7 +117,7 @@ AUTH_USER_MODEL = 'users.CustomUser'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
