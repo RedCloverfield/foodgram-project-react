@@ -172,31 +172,25 @@ class FavoriteAndShopingCartBaseModel(models.Model):
 
     class Meta():
         abstract = True
+        constraints = [
+            models.UniqueConstraint(
+                fields=('user', 'recipe'),
+                name='unique_%(class)s_recipe'
+            )
+        ]
 
 
 class Favorite(FavoriteAndShopingCartBaseModel):
 
-    class Meta():
+    class Meta(FavoriteAndShopingCartBaseModel.Meta):
         verbose_name = 'Избранный рецепт'
         verbose_name_plural = 'Избранные рецепты'
         default_related_name = 'favorites'
-        constraints = [
-            models.UniqueConstraint(
-                fields=('user', 'recipe'),
-                name='unique_favorite_recipe'
-            )
-        ]
 
 
 class ShoppingCart(FavoriteAndShopingCartBaseModel):
 
-    class Meta():
+    class Meta(FavoriteAndShopingCartBaseModel.Meta):
         verbose_name = 'Список покупок'
         verbose_name_plural = 'Списки покупок'
         default_related_name = 'shoppingcart'
-        constraints = [
-            models.UniqueConstraint(
-                fields=('user', 'recipe'),
-                name='unique_shopping_cart'
-            )
-        ]
