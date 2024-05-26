@@ -38,7 +38,7 @@ class CustomUserViewSet(UserViewSet):
                 raise exceptions.ParseError(
                     detail='Нельзя подписаться на самого себя.'
                 )
-            subscription, creation_status = Follow.objects.get_or_create(
+            _, creation_status = Follow.objects.get_or_create(
                 user=user, followed_user=followed_user
             )
             if not creation_status:
