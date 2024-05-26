@@ -135,7 +135,6 @@ class WriteRecipeSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         ingredients = validated_data.pop('recipeingredients')
         recipe = super().create(validated_data)
-        recipe = Recipe.objects.create(**validated_data)
         for ingredient in ingredients:
             RecipeIngredient.objects.create(**ingredient, recipe=recipe)
         return recipe
