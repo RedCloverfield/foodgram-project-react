@@ -2,7 +2,6 @@ from django.contrib.auth import get_user_model
 from djoser.views import UserViewSet
 from rest_framework import exceptions, status
 from rest_framework.decorators import action
-from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import (
     AllowAny,
     IsAuthenticated,
@@ -10,6 +9,7 @@ from rest_framework.permissions import (
 )
 from rest_framework.response import Response
 
+from api.pagination import LimitNumberPagination
 from .models import Follow
 from .serializers import FollowSerializer
 
@@ -20,7 +20,7 @@ User = get_user_model()
 class CustomUserViewSet(UserViewSet):
     permission_classes = (IsAuthenticatedOrReadOnly,)
 
-    @action(detail=False, pagination_class=LimitOffsetPagination)
+    @action(detail=False, pagination_class=LimitNumberPagination)
     def subscriptions(self, request):
         subscriptions = User.objects.filter(following_users__user=request.user)
         page = self.paginate_queryset(subscriptions)
