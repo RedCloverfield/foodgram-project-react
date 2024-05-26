@@ -49,55 +49,38 @@ class RecipeViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    @action(detail=True, methods=('post', 'delete'),
-            permission_classes=(IsAuthenticated,))
-    def favorite(self, request, pk=None):
+    def favorite_shoppingcart_logic(self, request, pk, model):
         user = request.user
         if request.method == 'POST':
             try:
                 recipe = self.get_queryset().get(pk=pk)
             except Recipe.DoesNotExist:
                 raise ParseError(detail='Такого рецепта не существует.')
-            _, creation_status = Favorite.objects.get_or_create(
+            _, creation_status = model.objects.get_or_create(
                 user=user, recipe=recipe
             )
             if not creation_status:
-                raise ParseError(detail='Данный рецепт уже в избранном.')
+                raise ParseError(detail='Данный рецепт уже добавлен.')
             return Response(
                 BaseRecipeSerializer(recipe).data,
                 status=status.HTTP_201_CREATED
             )
         recipe = self.get_object()
         try:
-            Favorite.objects.get(user=user, recipe=recipe).delete()
-        except Favorite.DoesNotExist:
-            raise ParseError(detail='Этого рецепта нет в избранном.')
+            model.objects.get(user=user, recipe=recipe).delete()
+        except model.DoesNotExist:
+            raise ParseError(detail='Этот рецепт еще не добавлен.')
         return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(detail=True, methods=('post', 'delete'),
             permission_classes=(IsAuthenticated,))
+    def favorite(self, request, pk=None):
+        return self.favorite_shoppingcart_logic(request, pk, Favorite)
+
+    @action(detail=True, methods=('post', 'delete'),
+            permission_classes=(IsAuthenticated,))
     def shopping_cart(self, request, pk=None):
-        user = request.user
-        if request.method == 'POST':
-            try:
-                recipe = self.get_queryset().get(pk=pk)
-            except Recipe.DoesNotExist:
-                raise ParseError(detail='Такого рецепта не существует.')
-            _, creation_status = ShoppingCart.objects.get_or_create(
-                user=user, recipe=recipe
-            )
-            if not creation_status:
-                raise ParseError(detail='Данный рецепт уже в списке покупок.')
-            return Response(
-                BaseRecipeSerializer(recipe).data,
-                status=status.HTTP_201_CREATED
-            )
-        recipe = self.get_object()
-        try:
-            ShoppingCart.objects.get(user=user, recipe=recipe).delete()
-        except ShoppingCart.DoesNotExist:
-            raise ParseError(detail='Этого рецепта нет в списке покупок.')
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return self.favorite_shoppingcart_logic(request, pk, ShoppingCart)
 
     @action(detail=False, permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request):
