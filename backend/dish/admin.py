@@ -17,7 +17,7 @@ User = get_user_model()
 
 class RecipeIngredientInline(admin.TabularInline):
     model = RecipeIngredient
-    fields = ('ingredient', 'amount', 'measure')
+    fields = ('ingredient', 'amount')
     min_num = 1
     extra = 0
 
