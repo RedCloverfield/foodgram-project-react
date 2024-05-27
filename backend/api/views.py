@@ -7,7 +7,13 @@ from rest_framework.exceptions import ParseError
 from rest_framework.permissions import AllowAny, IsAuthenticated, SAFE_METHODS
 from rest_framework.response import Response
 
-from dish.models import Tag, Ingredient, Recipe, Favorite, ShoppingCart
+from dish.models import (
+    Tag,
+    Ingredient,
+    Recipe,
+    Favorite,
+    ShoppingCart,
+    RecipeIngredient)
 from .filters import CustomRecipeFilter
 from .serializers import (
     TagSerializer,
@@ -86,12 +92,13 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, permission_classes=(IsAuthenticated,))
     def download_shopping_cart(self, request):
-        ingredients = Recipe.objects.filter(
-            shoppingcart__user=request.user
-        ).values_list(
-            'ingredients__name', 'ingredients__measurement_unit'
-        ).annotate(Sum('recipeingredients__amount'))
-
+        ingredients = (
+            RecipeIngredient.objects.filter(
+                recipe__shoppingcart__user=request.user
+            ).values_list(
+                'ingredient__name', 'ingredient__measurement_unit'
+            ).annotate(amount=Sum('amount'))
+        )
         shopping_cart_list = HttpResponse(
             content_type='text/plain', charset="utf-8"
         )
@@ -99,8 +106,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'attachment; filename="Shopping_cart.txt"'
         )
 
-        for ingredient in ingredients:
+        for ingredient, measurement_unit, amount in ingredients:
             shopping_cart_list.write(
-                f'{ingredient[0]} ({ingredient[1]}) - {ingredient[2]}\n'
+                f'{ingredient} ({measurement_unit}) - {amount}\n'
             )
         return shopping_cart_list
